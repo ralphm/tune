@@ -1,0 +1,37 @@
+--- bonobo/bonobo.override.orig	Tue Mar 16 16:08:31 2004
++++ bonobo/bonobo.override	Wed Jul 21 22:59:06 2004
+@@ -174,11 +174,11 @@
+     return 0;
+ }
+ %%
+-override bonobo_event_source_client_add_listener_closure kwargs
++override bonobo_event_source_client_add_listener kwargs
+ static PyObject *
+-_wrap_bonobo_event_source_client_add_listener_closure (PyGObject *self, PyObject *args, PyObject *kwargs)
++_wrap_bonobo_event_source_client_add_listener (PyGObject *self, PyObject *args, PyObject *kwargs)
+ {
+-    static char *kwlist[] = { "object", "callback", "extra_data", "opt_mask", NULL };
++    static char *kwlist[] = { "object", "callback", "opt_mask", "extra_data", NULL };
+     PyObject *object;
+     PyObject *callback;
+     gchar *opt_mask = NULL;
+@@ -186,12 +186,17 @@
+     CORBA_Environment ev;
+ 
+     if (!PyArg_ParseTupleAndKeywords(args, kwargs, 
+-                                     "O!|sO:bonobo.event_source_client_add_listener", 
++                                     "O!O|sO:bonobo.event_source_client_add_listener", 
+                                      kwlist,             
+                                      &PyCORBA_Object_Type, &object, &callback,
+ 				     &opt_mask, &params))
+         return NULL;
+-	
++		
++    if (!PyCallable_Check(callback)) {
++        PyErr_SetString (PyExc_TypeError, "second arg not callable");
++        return NULL;
++    }
++
+     CORBA_exception_init(&ev);
+     
+     bonobo_event_source_client_add_listener_closure (((PyCORBA_Object *)object)->objref,

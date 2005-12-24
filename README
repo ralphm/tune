@@ -1,0 +1,62 @@
+Rhythmbox Tune Publisher
+========================
+
+This little tool connects to Rhythmbox, a GNOME music player, using bonobo
+and watches changes to the current state of the player. It publishes
+this information to a Jabber pubsub node using the protocol described in
+JEP-0118 (User Tune).
+
+Requirements
+------------
+
+- Rhythmbox 0.8.5 (earlier versions will probably work, too)
+- Twisted Python >= 1.2.0
+- Python bindings to GNOME > 2.0.2 [1]
+
+[1] All versions of the Python bindings to GNOME have a bug in the bonobo
+    module, that is solved in CVS as of 2004/07/20. If you have a source
+	distribution of version 2.0.2 of these bindings, you can patch it using
+	the file bonobo.override.patch and reinstall.
+
+Usage
+-----
+
+Usage: python tune.py [options]
+Options:
+  -u, --username=  your Jabber username
+  -h, --host=      the Jabber server
+  -r, --resource=  the Jabber resource [default: tune_publisher]
+      --secret=    your password
+  -p, --port=      the Jabber server's port [default: 5222]
+  -s, --service=   the pubsub service
+  -n, --node=      the pubsub node
+      --version
+      --help       Display this help and exit.
+
+You need to have access to a pubsub service and have a node already created. I
+can provide this for you on request. The only known implementation of an
+application that listens for User Tune notifications is the Jabber World Map
+at http://ralphm.net/world, and you can also request to have its bot to
+subscribe to your User Tune node.
+
+The options --username, --host and --resource define the full JID from which
+you will publish. That JID (without resource) should be allowed to publish
+to the node described above. This tool will log in with the given JID
+without sending presence, and therefore also requires the password for that
+account.
+
+Acknowledgements
+----------------
+
+The source for semaphore.py was taken from a post to the Twisted-Python
+mailinglist by Andy Gayton. The post in question can be viewed here:
+
+http://twistedmatrix.com/pipermail/twisted-python/2004-March/007271.html
+
+Contact
+-------
+
+Any suggestions are appreciated, questions welcomed!
+
+Ralph Meijer
+xmpp:ralphm@ik.nu - 2004/07/21
